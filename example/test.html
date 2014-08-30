@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Demo</title>
+</head>
+<body>
+	<p>
+		Count: <span id="count">0</span>
+		<button id="btn">Add One</button>
+	</p>
+	
+	<script src="../eventProto.js"></script>
+	<script src="../extend.js"></script>
+	<script>
+		var btn = document.getElementById('btn'), num = 0,
+			count = document.getElementById('count');
+		extend(btn, eventProto);
+		btn.on('click', function() {
+			count.innerHTML = num++;
+		});
+	</script>
+</body>
+</html>

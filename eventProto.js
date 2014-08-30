@@ -8,17 +8,16 @@
     }
 }(function () {
 	
-	var cache = {},
-		slice = Array.prototype.slice;
+	var slice = Array.prototype.slice;
 
-	var each = function(arr, callback) {
+	var each = function(arr, callback, context) {
 		for(var i=0; i<arr.length; i++) {
-			callback.call(arr, arr[i], i, arr);
+			callback.call(context, arr[i], i, arr);
 		}
 	};
 
 	function eventProto() {
-
+		this._cache = {};
 	}
 
 	eventProto.prototype.on = function() {
@@ -31,12 +30,12 @@
 			if(typeof event !== 'string') {
 				throw new Error('event type ' + event + ' is not a string');
 			}
-			if(!cache[event]) {
-				cache[event] = {
+			if(!this._cache[event]) {
+				this._cache[event] = {
 					callbacks: []
 				};
 			}
-			cache[event].callbacks.push(listener);
+			this._cache[event].callbacks.push(listener);
 		}
 	};
 
@@ -46,11 +45,11 @@
 			listener = args.splice(args.length - 1, 1)[0];
 		}
 		each(args, function(event) {
-			if(!cache[event]) {
+			if(!this._cache[event]) {
 				throw new Error(event + ' is not registered');
 			}
 			if(listener) {
-				var callbacks = cache[event].callbacks;
+				var callbacks = this._cache[event].callbacks;
 				each(callbacks, function(callback, index) {
 					if(callback.toString() === listener.toString()) {
 						callbacks.splice(index, 1);
@@ -58,9 +57,9 @@
 					}
 				});
 			}else {
-				cache[event].callbacks = [];
+				this._cache[event].callbacks = [];
 			}
-		});
+		}, this);
 	};
 
 	eventProto.prototype.once = function() {
@@ -74,10 +73,10 @@
 	};
 
 	eventProto.prototype.trigger = function(event) {
-		if(!cache[event]) {
+		if(!this._cache[event]) {
 			throw new Error(event + ' is not registered');
 		}
-		var callbacks = cache[event].callbacks,
+		var callbacks = this._cache[event].callbacks,
 			args = slice.call(arguments, 1),
 			self = this;
 		each(callbacks, function(callback) {

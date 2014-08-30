@@ -10,7 +10,7 @@ function Foo() {
 }
 
 var foo = new Foo();
-extend(foo, eventProto.prototype);
+extend(foo, eventProto);
 
 describe('On', function() {
 	
