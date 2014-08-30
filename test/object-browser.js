@@ -108,3 +108,16 @@ describe('Off -- Mulitple callbacks for one type', function() {
 		assert.equal(foo.counter, 1);
 	});
 });
+
+describe('Once', function() {
+	it('should call once', function() {
+		foo.setCounter(1);
+		foo.once('add', function() {
+			this.counter++;
+		});
+		foo.trigger('add');
+		assert.equal(foo.counter, 2);
+		foo.trigger('add');
+		assert.equal(foo.counter, 2);
+	});
+})

@@ -63,8 +63,14 @@
 		});
 	};
 
-	eventProto.prototype.once = function(event, listener) {
-
+	eventProto.prototype.once = function() {
+		var args = slice.call(arguments),
+			listener = args.splice(args.length-1, 1)[0],
+			self = this;
+		self.on.apply(self, args.concat(function() {
+			listener.call(self);
+			self.off(args);
+		}));
 	};
 
 	eventProto.prototype.trigger = function(event) {
