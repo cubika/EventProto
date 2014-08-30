@@ -24,7 +24,8 @@
 		if(arguments.length < 2) {
 			throw new Error('expect at least two parameter');
 		}
-		var listener = arguments[arguments.length - 1];
+		var isDomNode = !!this.nodeType,
+			listener = arguments[arguments.length - 1];
 		for(var i=arguments.length-2; i>=0; i--) {
 			var event = arguments[i];
 			if(typeof event !== 'string') {
@@ -36,11 +37,20 @@
 				};
 			}
 			this._cache[event].callbacks.push(listener);
+
+			if(isDomNode) {
+				if(this.addEventListener) {
+					this.addEventListener(event, listener, false);
+				}else if(this.attachEvent) {
+					this.attachEvent('on' + event, listener);
+				}
+			}
 		}
 	};
 
 	eventProto.prototype.off = function() {
-		var args = slice.call(arguments), listener;
+		var isDomNode = !!this.nodeType,
+			args = slice.call(arguments), listener;
 		if(typeof args[args.length - 1] == 'function') {
 			listener = args.splice(args.length - 1, 1)[0];
 		}
@@ -49,6 +59,13 @@
 				throw new Error(event + ' is not registered');
 			}
 			if(listener) {
+				if(isDomNode) {
+					if(this.removeEventListener) {
+						this.removeEventListener(event, listener, false);
+					}else if(this.detachEvent) {
+						this.detachEvent('on'+event, listener);
+					}
+				}
 				var callbacks = this._cache[event].callbacks;
 				each(callbacks, function(callback, index) {
 					if(callback.toString() === listener.toString()) {
@@ -57,6 +74,15 @@
 					}
 				});
 			}else {
+				if(isDomNode) {
+					each(this._cache[event].callbacks, function(callback) {
+						if(this.removeEventListener) {
+							this.removeEventListener(event, callback, false);
+						}else if(this.detachEvent) {
+							this.detachEvent('on'+event, callback);
+						}
+					}, this);
+				}
 				this._cache[event].callbacks = [];
 			}
 		}, this);

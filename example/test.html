@@ -7,17 +7,22 @@
 <body>
 	<p>
 		Count: <span id="count">0</span>
-		<button id="btn">Add One</button>
+		<button id="addBtn">Add One</button>
 	</p>
+	<button id="offBtn">Remove Handler</button>
 	
 	<script src="../eventProto.js"></script>
 	<script src="../extend.js"></script>
 	<script>
-		var btn = document.getElementById('btn'), num = 0,
+		var addBtn = document.getElementById('addBtn'), num = 1,
+			offBtn = document.getElementById('offBtn'),
 			count = document.getElementById('count');
-		extend(btn, eventProto);
-		btn.on('click', function() {
+		extend(addBtn, eventProto);
+		addBtn.on('click', function() {
 			count.innerHTML = num++;
+		});
+		offBtn.on('click', function() {
+			addBtn.off('click');
 		});
 	</script>
 </body>
