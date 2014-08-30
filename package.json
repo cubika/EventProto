@@ -1,0 +1,25 @@
+{
+  "name": "EventProto",
+  "version": "0.0.0",
+  "description": "unified event management solution",
+  "main": "eventProto.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cubika/EventProto.git"
+  },
+  "keywords": [
+    "Event"
+  ],
+  "author": "cubika",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cubika/EventProto/issues"
+  },
+  "homepage": "https://github.com/cubika/EventProto",
+  "devDependencies": {
+    "mocha": "^1.21.4"
+  }
+}
